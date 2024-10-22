@@ -3,16 +3,24 @@ import requests
 from ultralytics import YOLO
 import easyocr
 import numpy as np
+import time
 from config import API_URL
 from utils.plate_number_utils import check_plate_identity, log_plate_number
+from utils.alarm_utils import send_alarm_notification
 
 # Load YOLO model
-yolo_model = YOLO(r'C:\Users\LENOVO\Documents\python\capstone-backend\main\model.pt').to('cuda');
+yolo_model = YOLO(r'C:\Users\LENOVO\Documents\python\capstone-backend\main\model.pt').to('cuda')
 
 # Initialize EasyOCR reader
 reader = easyocr.Reader(['en'], gpu=True)
 
-def run_yolo_detection(frame):
+# Initialize detection timing variables
+no_record_start_time = None
+ALARM_THRESHOLD_SECONDS = 1  # Set the threshold to 1 second for the alarm
+
+def run_yolo_detection(frame, camera_id):
+    global no_record_start_time
+
     # Run YOLO detection on the frame
     results = yolo_model(frame)
 
@@ -45,11 +53,25 @@ def run_yolo_detection(frame):
                 if prob > 0.5:  # Filter by confidence
                     detected_text = text
                     print(detected_text)
-                    log_plate_number(detected_text)
-
+                    log_plate_number(detected_text, camera_id)
 
             if detected_text:
-                color = check_plate_identity(detected_text)
+                color, identity = check_plate_identity(detected_text)
+
+                # Check if the identity is "No record"
+                if identity == "No record":
+                    # If "No record" is detected and no timer started, start the timer
+                    if no_record_start_time is None:
+                        no_record_start_time = time.time()
+                    else:
+                        # Check if the detection has lasted for more than 1 second
+                        elapsed_time = time.time() - no_record_start_time
+                        if elapsed_time >= ALARM_THRESHOLD_SECONDS:
+                            send_alarm_notification()
+                            color = (0, 0, 255)
+                else:
+                    # Reset the timer if the identity is not "No record"
+                    no_record_start_time = None
 
                 # Draw bounding box and display detected text on the frame
                 cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
