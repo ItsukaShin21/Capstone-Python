@@ -16,7 +16,7 @@ reader = easyocr.Reader(['en'], gpu=True)
 
 # Initialize detection timing variables
 no_record_start_time = None
-ALARM_THRESHOLD_SECONDS = 1  # Set the threshold to 1 second for the alarm
+ALARM_THRESHOLD_SECONDS = 5  # Set the threshold to 1 second for the alarm
 
 def run_yolo_detection(frame, camera_id):
     global no_record_start_time
@@ -50,7 +50,7 @@ def run_yolo_detection(frame, camera_id):
 
             detected_text = ''
             for (bbox, text, prob) in ocr_results:
-                if prob > 0.5:  # Filter by confidence
+                if prob > 0:  # Filter by confidence
                     detected_text = text
                     print(detected_text)
                     log_plate_number(detected_text, camera_id)
@@ -67,8 +67,8 @@ def run_yolo_detection(frame, camera_id):
                         # Check if the detection has lasted for more than 1 second
                         elapsed_time = time.time() - no_record_start_time
                         if elapsed_time >= ALARM_THRESHOLD_SECONDS:
-                            send_alarm_notification()
-                            color = (0, 0, 255)
+                            send_alarm_notification(camera_id)
+                            color = (255, 0, 0)
                 else:
                     # Reset the timer if the identity is not "No record"
                     no_record_start_time = None
