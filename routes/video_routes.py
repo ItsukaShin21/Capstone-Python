@@ -1,27 +1,22 @@
 from flask import Blueprint, Response, jsonify 
 import cv2
-from sqlalchemy.orm import sessionmaker, scoped_session
-from models.camera import Camera
-from config import engine
+import requests
+from config import API_URL
 from utils.camera_utils import run_yolo_detection
 
 # Create a Blueprint for video routes
 video_bp = Blueprint('video', __name__)
 
-# Configure a scoped session for thread-safe, per-request handling
-Session = scoped_session(sessionmaker(bind=engine))
-
 @video_bp.route('/video_feed/<int:camera_id>', methods=['GET'])
 def video_feed(camera_id):
-    session = Session()  # Create a new session for this request
-    try:
         # Query the camera from the database
-        camera = session.query(Camera).filter_by(id=camera_id).first()
-        if not camera:
-            return jsonify({'error': 'Camera not found'}), 404
+        db_response = requests.get(f"{API_URL}/fetch-cameras")
+
+        cameras = db_response.json().get("cameraLists", [])
+        camera = next((cam for cam in cameras if cam["id"] == camera_id), None)
 
         # Capture the RTSP stream
-        cap = cv2.VideoCapture(camera.rtsp_url)
+        cap = cv2.VideoCapture(camera["rtsp_url"])
 
         def generate():
             try:
@@ -46,8 +41,3 @@ def video_feed(camera_id):
                 cap.release()  # Ensure resources are released when done
 
         return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-    finally:
-        session.close()  # Ensure session is closed after the request

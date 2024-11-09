@@ -1,14 +1,11 @@
 from flask import Blueprint, jsonify
-from sqlalchemy.orm import sessionmaker
-from models.camera import Camera
-from config import engine
+from config import API_URL
+import requests
 
 alarm_bp = Blueprint('alarm', __name__)
 
 alarm_triggered = False
 location = ""
-
-Session = sessionmaker(bind=engine)
 
 @alarm_bp.route("/send-alarm")
 def send_alarm_route():
@@ -24,17 +21,17 @@ def send_alarm_notification(camera_id):
     global alarm_triggered
     global location
 
-    session = Session()
-
     try:
         # Query the camera by camera_id
-        camera = session.query(Camera).filter_by(id=camera_id).first()
+        db_response = requests.get(f"{API_URL}/check-location/{camera_id}")
 
-        if camera:
-            # Set the global location variable to the camera's location
-            location = camera.location
+        response_data = db_response.json()
+
+        # Check if location is in the response
+        if "location" in response_data:
+            location = response_data["location"]
         else:
-            print(f"No camera found with ID {camera_id}")
+            print(f"No location data found for camera ID {camera_id}")
             location = "Unknown Location"
 
         alarm_triggered = True  # Trigger the alarm
@@ -43,7 +40,3 @@ def send_alarm_notification(camera_id):
         # Handle any potential errors
         print(f"Error fetching camera location: {str(e)}")
         location = "Error occurred"
-
-    finally:
-        # Always close the session
-        session.close()

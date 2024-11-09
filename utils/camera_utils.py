@@ -1,10 +1,8 @@
 import cv2
-import requests
 from ultralytics import YOLO
 import easyocr
 import numpy as np
 import time
-from config import API_URL
 from utils.plate_number_utils import check_plate_identity, log_plate_number
 from utils.alarm_utils import send_alarm_notification
 
