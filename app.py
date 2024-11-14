@@ -11,7 +11,6 @@ app = Flask(__name__)
 CORS(app)
 
 # Register blueprints
-app.register_blueprint(camera_bp)
 app.register_blueprint(video_bp)
 app.register_blueprint(alarm_bp)
 
