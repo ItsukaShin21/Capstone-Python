@@ -4,7 +4,6 @@ import easyocr
 import numpy as np
 import time
 import requests
-from requests.exceptions import ConnectTimeout
 from config import API_URL
 from utils.plate_number_utils import log_plate_number, get_plate_identity
 from utils.alarm_utils import send_alarm_notification
@@ -17,7 +16,7 @@ reader = easyocr.Reader(['en'], gpu=True)
 
 no_record_start_time = None
 ALARM_THRESHOLD_SECONDS = 5  # Set the threshold to 5 seconds for the alarm
-FETCH_INTERVAL = 10  # Interval in seconds to refresh vehicle list
+FETCH_INTERVAL = 20  # Interval in seconds to refresh vehicle list
 last_fetch_time = time.time() - FETCH_INTERVAL  # Initialize to fetch immediately on first run
 
 # Initialize vehicle list
@@ -51,18 +50,18 @@ def run_yolo_detection(frame, camera_id):
             x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
             # Crop the detected area (ROI)
             roi = frame[int(y1):int(y2), int(x1):int(x2)]
-            # Convert the ROI to grayscale
-            roi_upscaled = cv2.resize(roi, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
-            roi_bright = cv2.convertScaleAbs(roi_upscaled, alpha=1.5, beta=20)
-            sharpening_kernel = np.array([[0, -1, 0],
-                              [-1, 5, -1],
-                              [0, -1, 0]])
-            roi_sharp = cv2.filter2D(roi_bright, -1, sharpening_kernel)
-            roi_gray = cv2.cvtColor(roi_sharp, cv2.COLOR_BGR2GRAY)
-            roi_thresh = cv2.adaptiveThreshold(roi_gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
-            cv2.imwrite("roi.jpg", roi_thresh)
+            # Resize to improve OCR accuracy
+            # roi = cv2.resize(roi, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+            roi_gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+            cv2.imwrite("roi.jpg", roi_gray)
             # Perform OCR on the processed ROI
-            ocr_results = reader.readtext(roi_thresh, allowlist="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", blocklist="!@#$%&*()+-_|}{:;")
+            ocr_results = reader.readtext(roi_gray, 
+                                          allowlist="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", 
+                                          blocklist="!@#$%&*()+-_|}{:;",
+                                          link_threshold=0.0,
+                                          contrast_ths=0.3,
+                                          adjust_contrast=0.7,
+                                          filter_ths=0.020)
             # allowlist="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", blocklist="!@#$%&*()+-_|}{:;"
 
             detected_text = ''
@@ -72,10 +71,14 @@ def run_yolo_detection(frame, camera_id):
                     print(detected_text)
 
             if detected_text:
+                # BGR
                 identity = get_plate_identity(detected_text, registered_vehicles)
 
                 if identity == "Employee":
                     color = (0, 255, 0)
+                    log_plate_number(detected_text, camera_id)
+                elif identity == "Visitor":
+                    color = (0, 165, 255)
                     log_plate_number(detected_text, camera_id)
                 else:
                     color = (0, 0, 255)
@@ -93,11 +96,7 @@ def run_yolo_detection(frame, camera_id):
                 else:
                     # Reset the timer if the identity is not "No record"
                     no_record_start_time = None
-                
-                if identity == "Visitor":
-                    color = (0, 165, 255)
-                    log_plate_number(detected_text, camera_id)
 
-                cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
+                cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), color, 10)
 
     return frame

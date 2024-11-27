@@ -13,6 +13,7 @@ def send_alarm_route():
     global location
     if alarm_triggered:
         alarm_triggered = False  # Reset the alarm after notifying
+        print("sended")
         return jsonify({"message": "Alarm", "location" : location}), 200
     else:
         return jsonify({"message": "No Alarm"}), 200
