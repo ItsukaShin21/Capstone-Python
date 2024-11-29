@@ -15,7 +15,7 @@ yolo_model = YOLO(r'/home/ubuntu/flask-backend/model.pt').to('cuda')
 reader = easyocr.Reader(['en'], gpu=True)
 
 no_record_start_time = None
-ALARM_THRESHOLD_SECONDS = 5  # Set the threshold to 5 seconds for the alarm
+ALARM_THRESHOLD_SECONDS = 180  # Set the threshold to 180 seconds for the alarm
 FETCH_INTERVAL = 20  # Interval in seconds to refresh vehicle list
 last_fetch_time = time.time() - FETCH_INTERVAL  # Initialize to fetch immediately on first run
 
