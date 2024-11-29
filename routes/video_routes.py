@@ -15,8 +15,8 @@ def video_feed(camera_id):
     camera = next((cam for cam in cameras if cam["id"] == camera_id), None)
 
     # Capture the RTSP stream using OpenCV
-    cap = cv2.VideoCapture(f"C:\\Users\\LENOVO\\Documents\\python\\capstone-backend\\main\\sample.mp4")
-    #cap = cv2.VideoCapture(camera["rtsp_url"])
+    #cap = cv2.VideoCapture(f"C:\\Users\\LENOVO\\Documents\\python\\capstone-backend\\main\\sample.mp4")
+    cap = cv2.VideoCapture(camera["rtsp_url"])
 
     def generate():
         frame_count = 0  # Track the frame count
@@ -25,8 +25,7 @@ def video_feed(camera_id):
             if not ret:
                 break
 
-            # Resize the frame to fit 640x400 without cropping
-            #frame_resized = cv2.resize(frame, (640, 400))
+
 
             # Run detection every 5 frames
             if frame_count % 1 == 0:
@@ -34,10 +33,13 @@ def video_feed(camera_id):
             else:
                 frame_with_detection = frame  # Skip detection, just send the frame
 
+            # Resize the frame to fit 640x400 without cropping
+            frame_resized = cv2.resize(frame_with_detection, (640, 400))
+
             frame_count += 1  # Increment the frame count
 
             # Convert the frame to JPEG format
-            _, jpeg = cv2.imencode('.jpg', frame_with_detection)
+            _, jpeg = cv2.imencode('.jpg', frame_resized)
 
             # Yield the frame as byte data for streaming
             yield (b'--frame\r\n'
