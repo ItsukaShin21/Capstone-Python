@@ -11,7 +11,7 @@ from utils.plate_number_utils import log_plate_number, get_plate_identity
 from utils.alarm_utils import send_alarm_notification
 
 # Load YOLO model
-yolo_model = YOLO(r'C:\Users\LENOVO\Documents\python\capstone-backend\main\model.pt').to('cuda')
+yolo_model = YOLO(r'/home/ubuntu/flask-backend/model.pt').to('cuda')
 
 # Initialize EasyOCR reader
 reader = easyocr.Reader(['en'], gpu=True)
