@@ -22,8 +22,10 @@ ALARM_THRESHOLD_SECONDS = 180  # 3 minutes
 FETCH_INTERVAL = 20  # Interval to refresh vehicle list
 last_fetch_time = time.time() - FETCH_INTERVAL  # Ensure immediate fetch on first run
 
-# Initialize registered vehicle list
+# Cache registered vehicle list
 registered_vehicles = []
+last_vehicle_fetch_time = 0
+FETCH_INTERVAL = 20  # Refresh interval for vehicle list (seconds)
 
 def fetch_vehicles():
     """Fetch the list of registered vehicles from the database."""
@@ -123,7 +125,7 @@ def run_yolo_detection(frame, camera_id):
                 identity = get_plate_identity(detected_text, registered_vehicles)
                 if identity == "Employee":
                     color = (0, 255, 0)  # Green for employee
-                    #log_plate_number(detected_text, camera_id)
+                    log_plate_number(detected_text, camera_id)
                 elif identity == "Visitor":
                     color = (0, 165, 255)  # Orange for visitor
                     log_plate_number(detected_text, camera_id)
