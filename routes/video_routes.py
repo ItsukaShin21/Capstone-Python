@@ -10,7 +10,7 @@ video_bp = Blueprint('video', __name__)
 def fetch_camera_by_id(camera_id):
     """Fetch camera details by ID."""
     try:
-        response = requests.get(f"{API_URL}/fetch-cameras", timeout=5)
+        response = requests.get(f"{API_URL}/fetch-cameras")
         cameras = response.json().get("cameraLists", [])
         return next((cam for cam in cameras if cam["id"] == camera_id), None)
     except requests.RequestException as e:
@@ -25,11 +25,11 @@ def video_feed(camera_id):
         return Response("Camera not found", status=404)
 
     # Capture the RTSP stream using OpenCV
-    # cap = cv2.VideoCapture(f"C:\\Users\\LENOVO\\Documents\\python\\capstone-backend\\main\\sample.mp4")
+    # cap = cv2.VideoCapture(f"C:\\Users\\LENOVO\\Documents\\python\\capstone-backend\\main\\sample3.mp4")
     cap = cv2.VideoCapture(camera["rtsp_url"])
 
     def generate():
-        frame_interval = 1  
+        frame_interval = 10
         frame_count = 0  # Track the frame count
         while True:
             ret, frame = cap.read()
