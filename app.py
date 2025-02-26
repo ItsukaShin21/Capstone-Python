@@ -12,7 +12,8 @@ from utils.alarm_utils import alarm_bp, send_info_bp
 app = Flask(__name__)
 
 # Configurations
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:@127.0.0.1:3306/capstone_db"
+# app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:@127.0.0.1:3306/capstone_db"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://admin:admin2102@capstone-db.cnwm0qomkcut.ap-southeast-1.rds.amazonaws.com:3306/capstone_db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
