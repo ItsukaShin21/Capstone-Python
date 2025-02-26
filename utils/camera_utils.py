@@ -13,7 +13,9 @@ from shared_data import registered_vehicles
 import re
 
 # Load YOLO model
-yolo_model = YOLO(r'C:\Users\LENOVO\Documents\python\capstone-backend\main\best.pt').to('cuda')
+# yolo_model = YOLO(r'C:\Users\LENOVO\Documents\python\capstone-backend\main\best.pt').to('cuda')
+yolo_model = YOLO('/home/ubuntu/capstone-backend/best.pt').to('cuda')
+
 
 # Initialize EasyOCR reader
 # reader = easyocr.Reader(['en'], gpu=True)
