@@ -6,7 +6,8 @@ from flask import Flask
 
 def seed_user():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:@127.0.0.1:3306/capstone_db"
+    # app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:@127.0.0.1:3306/capstone_db"
+    app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://admin:admin2102@capstone-db.cnwm0qomkcut.ap-southeast-1.rds.amazonaws.com:3306/capstone-db"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     db.init_app(app)
