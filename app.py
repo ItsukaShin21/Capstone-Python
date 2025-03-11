@@ -25,6 +25,8 @@ CORS(app,
                         "origins": "https://lnu-vms.online"
                         }})
 
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
+
 # Register blueprints
 app.register_blueprint(vehicle_controller)
 app.register_blueprint(user_controller)
