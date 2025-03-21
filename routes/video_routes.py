@@ -70,9 +70,7 @@ def video_feed(camera_id):
         while True:
             ret, frame = cap.read()
             if not ret:
-                cap.release()
-                cap = cv2.VideoCapture(camera["rtsp_url"], cv2.CAP_FFMPEG)
-                continue
+                break
             
             # Run detection every 10 frames
             if frame_count % frame_interval == 0:
