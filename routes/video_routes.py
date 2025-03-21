@@ -65,7 +65,7 @@ def video_feed(camera_id):
     cap.set(cv2.CAP_PROP_HW_ACCELERATION, cv2.VIDEO_ACCELERATION_ANY)
 
     def generate():
-        frame_interval = 10
+        frame_interval =  30 # 10
         frame_count = 0  # Track the frame count
         while True:
             ret, frame = cap.read()
