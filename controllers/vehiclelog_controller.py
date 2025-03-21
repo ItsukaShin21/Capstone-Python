@@ -27,6 +27,7 @@ def display_vehicle_logs():
         VehicleLog.plate_number,
         VehicleLog.username,
         VehicleLog.identity,
+        VehicleLog.email,
         VehicleLog.time_in,
         VehicleLog.time_out,
     ).all()
@@ -41,6 +42,7 @@ def display_vehicle_logs():
                 "time_out": format_datetime_to_manila(log.time_out),
                 "username": log.username,
                 "identity": log.identity,
+                "email": log.email,
             } for log in vehicle_logs
         ]
     })
@@ -54,6 +56,7 @@ def display_archived_logs():
         ArchiveLog.time_out,
         ArchiveLog.username,
         ArchiveLog.identity,
+        ArchiveLog.email,
     ).all()
 
     return jsonify({
@@ -62,6 +65,7 @@ def display_archived_logs():
                 "log_id" : archive.log_id,
                 "username" : archive.username,
                 "plate_number" : archive.plate_number,
+                "email" : archive.email,
                 "identity" : archive.identity,
                 "time_in" : format_datetime_to_manila(archive.time_in),
                 "time_out" : format_datetime_to_manila(archive.time_out),
@@ -207,6 +211,7 @@ def archive_logs():
             log_id=log.log_id,
             plate_number=log.plate_number,
             username=log.username,
+            email=log.email,
             identity=log.identity,
             time_in=log.time_in,
             time_out=log.time_out
@@ -236,6 +241,7 @@ def restore_logs():
             plate_number=log.plate_number,
             username=log.username,
             identity=log.identity,
+            email=log.email,
             time_in=log.time_in,
             time_out=log.time_out
         ) for log in archive_logs
