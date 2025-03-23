@@ -5,7 +5,8 @@ from datetime import datetime
 def log_plate_number(plate_number, camera_id, registered_vehicles):
     try:
         # Define the URL for the Flask route
-        url = "http://localhost:5000/add-record-log"  # Replace with the actual endpoint URL
+        # url = "http://localhost:5000/add-record-log"
+        url = "https://api.lnu-vms.online/add-record-log"
 
         # Prepare the JSON payload
         payload = {
