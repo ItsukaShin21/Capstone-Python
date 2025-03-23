@@ -13,8 +13,8 @@ from shared_data import registered_vehicles
 import re
 
 # Load YOLO model
-yolo_model = YOLO(r'C:\Users\LENOVO\Documents\python\capstone-backend\main\best.pt')
-# yolo_model = YOLO('/home/ubuntu/capstone-backend/best.pt')
+# yolo_model = YOLO(r'C:\Users\LENOVO\Documents\python\capstone-backend\main\best.pt')
+yolo_model = YOLO('/home/ubuntu/capstone-backend/best.pt')
 
 
 # Initialize EasyOCR reader
