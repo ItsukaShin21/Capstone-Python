@@ -59,13 +59,13 @@ def video_feed(camera_id):
         return Response("Camera not found", status=404)
 
     # Capture the RTSP stream using OpenCV
-    # cap = cv2.VideoCapture(f"C:\\Users\\LENOVO\\Documents\\python\\capstone-backend\\main\\video5(3-3).mp4")
+    # cap = cv2.VideoCapture(f"C:\\Users\\LENOVO\\Documents\\python\\capstone-backend\\main\\video8.mp4")
     cap = cv2.VideoCapture(camera["rtsp_url"], cv2.CAP_FFMPEG)
     cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)      
     cap.set(cv2.CAP_PROP_HW_ACCELERATION, cv2.VIDEO_ACCELERATION_ANY)
 
     def generate():
-        frame_interval =  30 # 10
+        frame_interval = 10 #30
         frame_count = 0  # Track the frame count
         while True:
             ret, frame = cap.read()
