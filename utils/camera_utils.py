@@ -13,13 +13,15 @@ from shared_data import registered_vehicles
 import re
 
 # Load YOLO model
-# yolo_model = YOLO(r'C:\Users\LENOVO\Documents\python\capstone-backend\main\best.pt')
-yolo_model = YOLO('/home/ubuntu/capstone-backend/best.pt')
+yolo_model = YOLO(r'C:\Users\LENOVO\Documents\python\capstone-backend\main\best.pt')
+# yolo_model = YOLO('/home/ubuntu/capstone-backend/best.pt')
 
 
 # Initialize EasyOCR reader
 # reader = easyocr.Reader(['en'], gpu=True)
-reader = ONNXPlateRecognizer('global-plates-mobile-vit-v2-model')
+reader = ONNXPlateRecognizer("global-plates-mobile-vit-v2-model")
+# reader = ONNXPlateRecognizer(model_path=r"C:\Users\LENOVO\Documents\python\capstone-backend\main\ocr_models\model.onnx",
+#                              config_path=r"C:\Users\LENOVO\Documents\python\capstone-backend\main\ocr_models\config.yaml")
 
 # Detection timing parameters
 detection_times = {}  # To track detection times for bounding boxes
@@ -57,6 +59,7 @@ def is_valid_plate_format(plate_text):
     """Check if the detected text matches the Philippine plate format.
     Accepts both the new format (3 letters and 4 numbers) and the old format (3 letters and 3 numbers).
     """
+    plate_text = plate_text.replace("_", "")
     return bool(re.match(r"^[A-Z]{3}\d{3}$", plate_text)) or bool(re.match(r"^[A-Z]{3}\d{4}$", plate_text))
 
 # def process_roi(roi):
@@ -102,6 +105,7 @@ def run_yolo_detection(frame, camera_id):
             roi = frame[int(y1):int(y2), int(x1):int(x2)]
 
             roi_gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+            # roi_gray_float = roi_gray.astype(np.float32) / 255.0
 
             # Process ROI using the new steps
             # processed_roi = process_roi(roi)
@@ -138,7 +142,7 @@ def run_yolo_detection(frame, camera_id):
             display_text = "Unregistered"
 
             for tracked_box, start_time in detection_times.items():
-                if iou(tracked_box, current_box) > 0.5:  # IoU threshold
+                if iou(tracked_box, current_box) > 0.0:  # IoU threshold
                     matched = True
                     elapsed_time = current_time - start_time
 
