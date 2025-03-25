@@ -13,13 +13,13 @@ from shared_data import registered_vehicles
 import re
 
 # Load YOLO model
-# yolo_model = YOLO(r'C:\Users\LENOVO\Documents\python\capstone-backend\main\best.pt')
-yolo_model = YOLO('/home/ubuntu/capstone-backend/best.pt')
+yolo_model = YOLO(r'C:\Users\LENOVO\Documents\python\capstone-backend\main\best.pt')
+# yolo_model = YOLO('/home/ubuntu/capstone-backend/best.pt')
 
 
 # Initialize EasyOCR reader
-# reader = easyocr.Reader(['en'], gpu=True)
-reader = ONNXPlateRecognizer("global-plates-mobile-vit-v2-model")
+reader = easyocr.Reader(['en'], gpu=True)
+# reader = ONNXPlateRecognizer("global-plates-mobile-vit-v2-model")
 # reader = ONNXPlateRecognizer(model_path=r"C:\Users\LENOVO\Documents\python\capstone-backend\main\ocr_models\model.onnx",
 #                              config_path=r"C:\Users\LENOVO\Documents\python\capstone-backend\main\ocr_models\config.yaml")
 
@@ -114,23 +114,23 @@ def run_yolo_detection(frame, camera_id):
             cv2.imwrite("roi.jpg", roi_gray)
 
             # Perform OCR
-            # ocr_results = reader.readtext(
-            #     roi_gray,
-            #     allowlist="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
-            #     blocklist="!@#$%&*()+-_|}{:;",
-            #     link_threshold=0.0,
-            #     contrast_ths=0.3,
-            #     adjust_contrast=0.2,
-            #     filter_ths=0.5
-            # )
+            ocr_results = reader.readtext(
+                roi_gray,
+                allowlist="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+                blocklist="!@#$%&*()+-_|}{:;",
+                link_threshold=0.0,
+                contrast_ths=0.3,
+                adjust_contrast=0.2,
+                filter_ths=0.5
+            )
 
 
-            detected_text = reader.run(roi_gray)
-            print(detected_text)
-            # for (bbox, text, prob) in ocr_results:
-            #     if prob > 0.8:
-            #         detected_text = text
-            #         print(detected_text)
+            # detected_text = reader.run(roi_gray)
+            # print(detected_text)
+            for (bbox, text, prob) in ocr_results:
+                if prob > 0.8:
+                    detected_text = text
+                    print(detected_text)
             if isinstance(detected_text, list) and detected_text:
                 detected_text = detected_text[0]  # Extract first element
                 detected_text = detected_text.replace("_", "").strip() 
