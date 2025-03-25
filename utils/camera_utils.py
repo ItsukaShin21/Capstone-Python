@@ -18,8 +18,8 @@ yolo_model = YOLO('/home/ubuntu/capstone-backend/best.pt')
 
 
 # Initialize EasyOCR reader
-reader = easyocr.Reader(['en'], gpu=True)
-# reader = ONNXPlateRecognizer("global-plates-mobile-vit-v2-model")
+# reader = easyocr.Reader(['en'], gpu=True)
+reader = ONNXPlateRecognizer("global-plates-mobile-vit-v2-model")
 # reader = ONNXPlateRecognizer(model_path=r"C:\Users\LENOVO\Documents\python\capstone-backend\main\ocr_models\model.onnx",
 #                              config_path=r"C:\Users\LENOVO\Documents\python\capstone-backend\main\ocr_models\config.yaml")
 
@@ -125,12 +125,12 @@ def run_yolo_detection(frame, camera_id):
             )
 
 
-            # detected_text = reader.run(roi_gray)
-            # print(detected_text)
-            for (bbox, text, prob) in ocr_results:
-                if prob > 0.8:
-                    detected_text = text
-                    print(detected_text)
+            detected_text = reader.run(roi_gray)
+            print(detected_text)
+            # for (bbox, text, prob) in ocr_results:
+            #     if prob > 0.8:
+            #         detected_text = text
+            #         print(detected_text)
             if isinstance(detected_text, list) and detected_text:
                 detected_text = detected_text[0]  # Extract first element
                 detected_text = detected_text.replace("_", "").strip() 
