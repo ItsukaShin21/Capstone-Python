@@ -60,8 +60,8 @@ def is_valid_plate_format(plate_text):
     Accepts both the new format (3 letters and 4 numbers) and the old format (3 letters and 3 numbers).
     """
     plate_text = plate_text.replace("_", "")
-    # return bool(re.match(r"^[A-Z]{3}\d{3}$", plate_text)) or bool(re.match(r"^[A-Z]{3}\d{4}$", plate_text))
-    return bool(re.match(r"^[A-Z0-9]{6,7}$", plate_text))
+    return bool(re.match(r"^[A-Z]{3}\d{3}$", plate_text)) or bool(re.match(r"^[A-Z]{3}\d{4}$", plate_text))
+    # return bool(re.match(r"^[A-Z0-9]{6,7}$", plate_text))
 
 # def process_roi(roi):
 #     """Process the ROI to enhance text detection."""
