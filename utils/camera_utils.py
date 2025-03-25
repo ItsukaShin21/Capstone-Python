@@ -126,7 +126,7 @@ def run_yolo_detection(frame, camera_id):
 
 
             # detected_text = reader.run(roi_gray)
-            print(detected_text)
+            # print(detected_text)
             for (bbox, text, prob) in ocr_results:
                 if prob > 0.8:
                     detected_text = text
