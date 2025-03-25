@@ -114,15 +114,15 @@ def run_yolo_detection(frame, camera_id):
             cv2.imwrite("roi.jpg", roi_gray)
 
             # Perform OCR
-            ocr_results = reader.readtext(
-                roi_gray,
-                allowlist="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
-                blocklist="!@#$%&*()+-_|}{:;",
-                link_threshold=0.0,
-                contrast_ths=0.3,
-                adjust_contrast=0.2,
-                filter_ths=0.5
-            )
+            # ocr_results = reader.readtext(
+            #     roi_gray,
+            #     allowlist="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+            #     blocklist="!@#$%&*()+-_|}{:;",
+            #     link_threshold=0.0,
+            #     contrast_ths=0.3,
+            #     adjust_contrast=0.2,
+            #     filter_ths=0.5
+            # )
 
 
             detected_text = reader.run(roi_gray)
